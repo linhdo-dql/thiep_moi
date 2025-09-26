@@ -29,7 +29,8 @@ const CountdownTimer: React.FC<{ targetDate: string }> = ({ targetDate }) => {
     return () => clearTimeout(timer);
   });
 
-  const timerComponents: JSX.Element[] = [];
+  // FIX: Use React.ReactElement to avoid "Cannot find namespace 'JSX'" error.
+  const timerComponents: React.ReactElement[] = [];
 
   Object.keys(timeLeft).forEach((interval) => {
     if (!timeLeft[interval as keyof typeof timeLeft] && timeLeft[interval as keyof typeof timeLeft] !== 0) {

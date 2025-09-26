@@ -24,14 +24,14 @@ const Footer: React.FC = () => {
       className="text-center text-white relative overflow-hidden"
     >
       <img 
-        src="https://i.postimg.cc/s1ds48P5/b2.jpg" 
+        src="https://i.postimg.cc/0NZFy3bc/bghead.jpg" 
         alt="Sảnh cưới lộng lẫy trang trí hoa"
-        className="absolute inset-0 w-full h-full object-cover z-[-1]"
+        className="absolute inset-0 w-full h-full object-cover"
         style={{
           transform: `translateY(-${offset}px) scale(1.1)`,
         }}
       />
-      <div className="bg-black bg-opacity-50 py-20">
+      <div className="relative bg-black bg-opacity-50 py-20">
         <h2 className="font-dancing text-5xl mb-4">Trân trọng cảm ơn!</h2>
         <p className="font-cormorant text-2xl mb-6">Cảm ơn bạn đã là một phần trong câu chuyện của chúng tôi.</p>
         <div className="flex items-center justify-center gap-4 font-dancing text-3xl">
