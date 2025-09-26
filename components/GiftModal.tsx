@@ -31,15 +31,15 @@ const GiftModal: React.FC<GiftModalProps> = ({ isOpen, onClose }) => {
 
         <div className="mb-6">
             <img 
-                src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PlaceholderForBankAccount" 
+                src="https://api.vietqr.io/image/mbbank-0326838898-print.png" 
                 alt="QR Code Mừng Cưới"
                 className="mx-auto rounded-md shadow-md"
             />
         </div>
 
         <div className="text-left bg-gray-50 p-4 rounded-lg border">
-            <p><strong className="text-gray-700">Ngân hàng:</strong> <span className="text-[#8d6e63]">MB Bank (Ví dụ)</span></p>
-            <p><strong className="text-gray-700">Số tài khoản:</strong> <span className="text-[#8d6e63]">0123456789</span></p>
+            <p><strong className="text-gray-700">Ngân hàng:</strong> <span className="text-[#8d6e63]">MB Bank</span></p>
+            <p><strong className="text-gray-700">Số tài khoản:</strong> <span className="text-[#8d6e63]">0326838898</span></p>
             <p><strong className="text-gray-700">Chủ tài khoản:</strong> <span className="text-[#8d6e63]">QUANG LINH</span></p>
         </div>
 

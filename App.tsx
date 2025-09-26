@@ -6,6 +6,7 @@ import StorySection from './components/StorySection';
 import GallerySection from './components/GallerySection';
 import RSVPSection from './components/RSVPSection';
 import ContactSection from './components/ContactSection';
+import MapSection from './components/MapSection';
 import Footer from './components/Footer';
 import GuestBook from './components/GuestBook';
 
@@ -18,6 +19,7 @@ const MainInvitationPage: React.FC = () => (
       <GallerySection />
       <RSVPSection />
       <ContactSection />
+      <MapSection />
     </main>
     <Footer />
   </>
