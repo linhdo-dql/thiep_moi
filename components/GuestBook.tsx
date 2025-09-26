@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import AnimatedSection from './AnimatedSection';
 import Divider from './Divider';
 import { db } from '../firebaseConfig';
-import { collection, getDocs, query, orderBy, Timestamp } from 'firebase/firestore';
+import { ref, onValue, query, orderByChild } from 'firebase/database';
 
 interface GuestMessage {
     name: string;
@@ -12,45 +12,48 @@ interface GuestMessage {
     date: string;
 }
 
-// Firestore document structure (for type safety)
-interface WishDoc {
+interface WishData {
     name: string;
     message: string;
     attendance: 'attending' | 'not_attending';
-    createdAt: Timestamp;
+    createdAt: number;
 }
-
 
 const GuestBook: React.FC = () => {
   const [messages, setMessages] = useState<GuestMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMessages = async () => {
-        setIsLoading(true);
-        try {
-            const wishesCollection = collection(db, 'wishes');
-            const q = query(wishesCollection, orderBy('createdAt', 'desc'));
-            const querySnapshot = await getDocs(q);
-            const fetchedMessages: GuestMessage[] = querySnapshot.docs.map(doc => {
-                const data = doc.data() as WishDoc;
+    const wishesRef = ref(db, 'wishes');
+    const wishesQuery = query(wishesRef, orderByChild('createdAt'));
+
+    const unsubscribe = onValue(wishesQuery, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            const fetchedMessages: GuestMessage[] = Object.keys(data).map(key => {
+                const wish: WishData = data[key];
                 return {
-                    name: data.name,
-                    message: data.message,
-                    attendance: data.attendance,
-                    date: data.createdAt.toDate().toISOString(), // Convert Timestamp to ISO string
+                    name: wish.name,
+                    message: wish.message,
+                    attendance: wish.attendance,
+                    date: new Date(wish.createdAt).toISOString(),
                 };
             });
-            setMessages(fetchedMessages);
-        } catch (error) {
-            console.error("Error fetching messages:", error);
-        } finally {
-            setIsLoading(false);
+            // Sắp xếp theo thứ tự mới nhất trước tiên
+            setMessages(fetchedMessages.reverse());
+        } else {
+            setMessages([]);
         }
-    };
+        setIsLoading(false);
+    }, (error) => {
+        console.error("Error fetching messages:", error);
+        setIsLoading(false);
+    });
     
-    fetchMessages();
-    window.scrollTo(0, 0); // Scroll to top on component mount
+    window.scrollTo(0, 0);
+
+    // Dọn dẹp listener khi component unmount
+    return () => unsubscribe();
   }, []);
 
   const downloadMessages = () => {
@@ -61,7 +64,7 @@ const GuestBook: React.FC = () => {
     const a = document.createElement('a');
     a.href = url;
     a.download = 'loi-chuc-dam-cuoi.json';
-    document.body.appendChild(a); // Required for Firefox
+    document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);

@@ -59,7 +59,7 @@ const App: React.FC = () => {
     <div className="bg-[#fdfaf6] text-gray-700 font-cormorant">
       <audio 
         ref={audioRef} 
-        src="https://ia800905.us.archive.org/19/items/FREE_background_music_dhalius/dhalius-calm-and-peaceful.mp3" 
+        src="https://cdn.pixabay.com/download/audio/2022/11/22/audio_2c5a54a22c.mp3" 
         loop 
       />
 

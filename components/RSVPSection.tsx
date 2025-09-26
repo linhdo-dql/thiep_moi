@@ -4,7 +4,7 @@ import AnimatedSection from './AnimatedSection';
 import Divider from './Divider';
 import GiftModal from './GiftModal';
 import { db } from '../firebaseConfig';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { ref, push, serverTimestamp } from 'firebase/database';
 
 const RSVPSection: React.FC = () => {
   const [name, setName] = useState('');
@@ -17,13 +17,17 @@ const RSVPSection: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    if (isSubmitting || !name.trim() || !message.trim()) {
+        setError('Vui lòng điền đầy đủ tên và lời chúc.');
+        return;
+    };
 
     setIsSubmitting(true);
     setError('');
 
     try {
-      await addDoc(collection(db, "wishes"), {
+      const wishesRef = ref(db, 'wishes');
+      await push(wishesRef, {
         name: name,
         message: message,
         attendance: attendance,
