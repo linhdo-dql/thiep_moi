@@ -14,8 +14,8 @@ const Header: React.FC = () => {
     <header className="relative h-screen flex items-center justify-center text-center text-white overflow-hidden">
       <div className="absolute inset-0 bg-black opacity-40 z-10"></div>
       <img 
-        src="https://images.unsplash.com/photo-1551893343-a9d0f6b218f2?q=80&w=1920&auto=format&fit=crop" 
-        alt="Soft floral background"
+        src="https://i.imgur.com/gJZ438W.jpeg" 
+        alt="Sảnh cưới lộng lẫy trang trí hoa"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ transform: `translateY(${offsetY * 0.5}px) scale(1.1)` }}
         loading="eager"

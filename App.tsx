@@ -62,40 +62,40 @@ const App: React.FC = () => {
       />
 
       {!isSiteEntered && (
-        <div className="fixed inset-0 z-[100] bg-[#fdfaf6] flex items-center justify-center text-center p-4">
-          <div className="animate-fade-in">
-            <h1 className="font-dancing text-5xl md:text-7xl text-[#a1887f] mb-4 flex items-center justify-center gap-4 md:gap-8">
-              <div className="md:hidden text-center leading-tight">
-                <span>Quang</span><br/>
-                <span>Linh</span>
-              </div>
-              <span className="hidden md:inline">Quang Linh</span>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-[#a1887f]" fill="none" viewBox="0 0 24 24" strokeWidth="1" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-              </svg>
-              <div className="md:hidden text-center leading-tight">
-                <span>Thanh</span><br/>
-                <span>Loan</span>
-              </div>
-              <span className="hidden md:inline">Thanh Loan</span>
-            </h1>
-            <p className="font-cormorant text-xl md:text-2xl text-gray-600 mb-12">Trân trọng mời bạn tham dự lễ cưới</p>
-            <button
-              onClick={handleSiteEnter}
-              className="bg-[#8d6e63] text-white font-bold py-4 px-10 rounded-full hover:bg-[#a1887f] transition-colors duration-300 shadow-lg text-lg"
-            >
-              Mở Thiệp Mời
-            </button>
-          </div>
-          <style>{`
-            @keyframes fade-in {
-              from { opacity: 0; transform: translateY(20px); }
-              to { opacity: 1; transform: translateY(0); }
-            }
-            .animate-fade-in {
-              animation: fade-in 1.5s ease-out forwards;
-            }
-          `}</style>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center text-white text-center p-4 overflow-hidden">
+            <div className="absolute inset-0 bg-black opacity-40 z-10"></div>
+            <img src="https://i.imgur.com/gJZ438W.jpeg" alt="Sảnh cưới lộng lẫy" className="absolute inset-0 w-full h-full object-cover" />
+            <div className="relative z-10 animate-fade-in">
+                <h1 className="font-dancing text-6xl md:text-8xl mb-6 flex items-center justify-center gap-6 md:gap-10">
+                    <div className="text-center leading-tight">
+                        <span>Quang</span><br/>
+                        <span>Linh</span>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" strokeWidth="1" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                    </svg>
+                    <div className="text-center leading-tight">
+                        <span>Thanh</span><br/>
+                        <span>Loan</span>
+                    </div>
+                </h1>
+                <p className="font-cormorant text-lg md:text-xl mb-10 tracking-wider">Trân trọng mời bạn tham dự lễ cưới</p>
+                <button
+                    onClick={handleSiteEnter}
+                    className="bg-white/10 backdrop-blur-md border border-white/20 text-white font-cormorant text-lg py-3 px-12 rounded-full hover:bg-white/20 transition-colors duration-300 shadow-xl"
+                >
+                    Mở Thiệp Mời
+                </button>
+            </div>
+            <style>{`
+                @keyframes fade-in {
+                  from { opacity: 0; transform: translateY(20px); }
+                  to { opacity: 1; transform: translateY(0); }
+                }
+                .animate-fade-in {
+                  animation: fade-in 1.5s ease-out forwards;
+                }
+            `}</style>
         </div>
       )}
 

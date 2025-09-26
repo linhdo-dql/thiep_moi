@@ -26,7 +26,7 @@ const Footer: React.FC = () => {
        <div 
         className="absolute inset-0 bg-cover bg-center z-[-1]"
         style={{
-          backgroundImage: "url('https://picsum.photos/id/1060/1920/1080')",
+          backgroundImage: "url('https://i.imgur.com/gJZ438W.jpeg')",
           transform: `translateY(-${offset}px) scale(1.1)`,
         }}
       ></div>
