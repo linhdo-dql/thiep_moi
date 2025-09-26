@@ -11,8 +11,8 @@ import { getDatabase } from 'firebase/database';
 const firebaseConfig = {
   apiKey: "AIzaSyBJ_4lI9l-81b9PESTc-kZMFKXehMBzBUQ",
   authDomain: "thiepmoi-2ba7b.firebaseapp.com",
-  // Thêm databaseURL cho Realtime Database
-  databaseURL: "https://thiepmoi-2ba7b-default-rtdb.firebaseio.com",
+  // Cập nhật databaseURL để trỏ đúng khu vực
+  databaseURL: "https://thiepmoi-2ba7b-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "thiepmoi-2ba7b",
   storageBucket: "thiepmoi-2ba7b.firebasestorage.app",
   messagingSenderId: "565926157521",
