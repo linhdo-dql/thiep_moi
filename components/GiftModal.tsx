@@ -40,7 +40,7 @@ const GiftModal: React.FC<GiftModalProps> = ({ isOpen, onClose }) => {
         <div className="text-left bg-gray-50 p-4 rounded-lg border">
             <p><strong className="text-gray-700">Ngân hàng:</strong> <span className="text-[#8d6e63]">MB Bank (Ví dụ)</span></p>
             <p><strong className="text-gray-700">Số tài khoản:</strong> <span className="text-[#8d6e63]">0123456789</span></p>
-            <p><strong className="text-gray-700">Chủ tài khoản:</strong> <span className="text-[#8d6e63]">QUANG MINH</span></p>
+            <p><strong className="text-gray-700">Chủ tài khoản:</strong> <span className="text-[#8d6e63]">QUANG LINH</span></p>
         </div>
 
         <button

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import AnimatedSection from './AnimatedSection';
 import Divider from './Divider';
 import GiftModal from './GiftModal';
@@ -12,14 +13,26 @@ const RSVPSection: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real application, you would send this data to a server
-    console.log({ name, attendance, message });
+    
+    // Save message to localStorage
+    const existingMessages = JSON.parse(localStorage.getItem('guestMessages') || '[]');
+    const newMessage = { 
+      name, 
+      message, 
+      attendance,
+      date: new Date().toISOString() 
+    };
+    const updatedMessages = [newMessage, ...existingMessages];
+    localStorage.setItem('guestMessages', JSON.stringify(updatedMessages));
+
     setIsSubmitted(true);
 
-    // Show the gift modal after a short delay
-    setTimeout(() => {
-        setIsModalOpen(true);
-    }, 1000);
+    // Show the gift modal if attending
+    if (attendance === 'attending') {
+        setTimeout(() => {
+            setIsModalOpen(true);
+        }, 1500);
+    }
   };
   
   return (
@@ -68,6 +81,7 @@ const RSVPSection: React.FC = () => {
                     rows={4}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
+                    required
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#a1887f] focus:outline-none"
                     placeholder="Gửi gắm yêu thương..."
                   ></textarea>
@@ -84,8 +98,11 @@ const RSVPSection: React.FC = () => {
             </>
           ) : (
             <div className="text-center p-8 bg-green-50 border border-green-200 rounded-lg">
-                <h3 className="text-2xl font-semibold text-green-800">Cảm ơn bạn đã gửi lời chúc!</h3>
-                <p className="mt-2 text-green-700">Chúng tôi đã nhận được thông tin của bạn. Hẹn gặp bạn tại buổi lễ!</p>
+                <h3 className="text-2xl font-semibold text-green-800">Cảm ơn bạn đã phản hồi!</h3>
+                <p className="mt-2 text-green-700">Lời chúc của bạn đã được ghi lại trong sổ lưu bút của chúng tôi.</p>
+                <Link to="/guestbook" className="inline-block mt-4 bg-green-600 text-white font-bold py-2 px-4 rounded-full hover:bg-green-700 transition-colors">
+                    Xem Sổ Lưu Bút
+                </Link>
             </div>
           )}
         </AnimatedSection>

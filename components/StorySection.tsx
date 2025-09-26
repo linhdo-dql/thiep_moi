@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import AnimatedSection from './AnimatedSection';
 import Divider from './Divider';
 
@@ -49,6 +50,14 @@ const StorySection: React.FC = () => {
                 </div>
             </AnimatedSection>
           </div>
+        </div>
+
+        <div className="text-center mt-16">
+            <AnimatedSection>
+                 <Link to="/guestbook" className="inline-block bg-[#fdfaf6] text-[#8d6e63] font-bold py-3 px-8 rounded-full border-2 border-[#8d6e63] hover:bg-[#8d6e63] hover:text-white transition-colors duration-300 shadow-lg">
+                    Xem Sổ Lưu Bút Ký Tên
+                </Link>
+            </AnimatedSection>
         </div>
       </div>
     </section>
