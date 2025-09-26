@@ -21,15 +21,16 @@ const Footer: React.FC = () => {
   return (
     <footer 
       ref={footerRef}
-      className="py-20 text-center text-white relative overflow-hidden"
+      className="text-center text-white relative overflow-hidden"
     >
-       <div 
-        className="absolute inset-0 bg-cover bg-center z-[-1]"
+      <img 
+        src="https://i.postimg.cc/s1ds48P5/b2.jpg" 
+        alt="Sảnh cưới lộng lẫy trang trí hoa"
+        className="absolute inset-0 w-full h-full object-cover z-[-1]"
         style={{
-          backgroundImage: "url('https://i.imgur.com/gJZ438W.jpeg')",
           transform: `translateY(-${offset}px) scale(1.1)`,
         }}
-      ></div>
+      />
       <div className="bg-black bg-opacity-50 py-20">
         <h2 className="font-dancing text-5xl mb-4">Trân trọng cảm ơn!</h2>
         <p className="font-cormorant text-2xl mb-6">Cảm ơn bạn đã là một phần trong câu chuyện của chúng tôi.</p>

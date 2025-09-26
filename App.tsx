@@ -64,7 +64,7 @@ const App: React.FC = () => {
       {!isSiteEntered && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center text-white text-center p-4 overflow-hidden">
             <div className="absolute inset-0 bg-black opacity-40 z-10"></div>
-            <img src="https://i.imgur.com/gJZ438W.jpeg" alt="Sảnh cưới lộng lẫy" className="absolute inset-0 w-full h-full object-cover" />
+            <img src="https://i.postimg.cc/SKzYS0Tp/abia.png" alt="Sảnh cưới lộng lẫy" className="absolute inset-0 w-full h-full object-cover" />
             <div className="relative z-10 animate-fade-in">
                 <h1 className="font-dancing text-6xl md:text-8xl mb-6 flex items-center justify-center gap-6 md:gap-10">
                     <div className="text-center leading-tight">
