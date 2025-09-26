@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import AnimatedSection from './AnimatedSection';
 import Divider from './Divider';
 import GiftModal from './GiftModal';
+import { db } from '../firebaseConfig';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const RSVPSection: React.FC = () => {
   const [name, setName] = useState('');
@@ -10,28 +12,36 @@ const RSVPSection: React.FC = () => {
   const [message, setMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Save message to localStorage
-    const existingMessages = JSON.parse(localStorage.getItem('guestMessages') || '[]');
-    const newMessage = { 
-      name, 
-      message, 
-      attendance,
-      date: new Date().toISOString() 
-    };
-    const updatedMessages = [newMessage, ...existingMessages];
-    localStorage.setItem('guestMessages', JSON.stringify(updatedMessages));
+    if (isSubmitting) return;
 
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+    setError('');
 
-    // Show the gift modal if attending
-    if (attendance === 'attending') {
-        setTimeout(() => {
-            setIsModalOpen(true);
-        }, 1500);
+    try {
+      await addDoc(collection(db, "wishes"), {
+        name: name,
+        message: message,
+        attendance: attendance,
+        createdAt: serverTimestamp()
+      });
+
+      setIsSubmitted(true);
+
+      if (attendance === 'attending') {
+          setTimeout(() => {
+              setIsModalOpen(true);
+          }, 1500);
+      }
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      setError("Đã có lỗi xảy ra khi gửi lời chúc. Vui lòng thử lại.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
   
@@ -86,12 +96,14 @@ const RSVPSection: React.FC = () => {
                     placeholder="Gửi gắm yêu thương..."
                   ></textarea>
                 </div>
+                {error && <p className="text-red-500 text-sm text-center">{error}</p>}
                 <div className="text-center">
                     <button
                         type="submit"
-                        className="bg-[#8d6e63] text-white font-bold py-3 px-8 rounded-full hover:bg-[#a1887f] transition-colors duration-300 shadow-lg"
+                        disabled={isSubmitting}
+                        className="bg-[#8d6e63] text-white font-bold py-3 px-8 rounded-full hover:bg-[#a1887f] transition-colors duration-300 shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
-                        Gửi Lời Chúc
+                        {isSubmitting ? 'Đang gửi...' : 'Gửi Lời Chúc'}
                     </button>
                 </div>
               </form>
