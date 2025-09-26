@@ -19,7 +19,6 @@ const MainInvitationPage: React.FC = () => (
       <GallerySection />
       <RSVPSection />
       <ContactSection />
-      <MapSection />
     </main>
     <Footer />
   </>
