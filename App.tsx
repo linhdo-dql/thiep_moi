@@ -19,6 +19,7 @@ const MainInvitationPage: React.FC = () => (
       <GallerySection />
       <RSVPSection />
       <ContactSection />
+      <MapSection />
     </main>
     <Footer />
   </>
@@ -32,7 +33,8 @@ const App: React.FC = () => {
   const handleSiteEnter = () => {
     setIsSiteEntered(true);
     const audio = audioRef.current;
-    if (audio) {
+    // Chỉ phát nhạc nếu có một nguồn nhạc hợp lệ
+    if (audio && audio.src) {
       audio.play().then(() => {
         setIsPlaying(true);
       }).catch(error => {
@@ -44,7 +46,7 @@ const App: React.FC = () => {
 
   const toggleMusic = () => {
     const audio = audioRef.current;
-    if (audio) {
+    if (audio && audio.src) {
       if (isPlaying) {
         audio.pause();
       } else {
@@ -56,9 +58,15 @@ const App: React.FC = () => {
 
   return (
     <div className="bg-[#fdfaf6] text-gray-700 font-cormorant">
+      {/* 
+        TODO: THAY THẾ BẰNG LIÊN KẾT TRỰC TIẾP ĐẾN FILE NHẠC CỦA BẠN
+        Hãy tải file nhạc .mp3 của bạn lên một dịch vụ lưu trữ (ví dụ: Imgur, Catbox, hoặc hosting riêng)
+        và dán đường dẫn trực tiếp vào thuộc tính `src` dưới đây.
+        Ví dụ: src="https://your-domain.com/your-music.mp3"
+      */}
       <audio 
         ref={audioRef} 
-        src="https://cdn.pixabay.com/download/audio/2022/11/22/audio_2c5a54a22c.mp3" 
+        src="https://files.catbox.moe/ux7bsp.mp3" // <-- THAY THẾ ĐƯỜNG DẪN NHẠC CỦA BẠN TẠI ĐÂY
         loop 
       />
 
