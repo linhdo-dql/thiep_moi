@@ -32,16 +32,16 @@ const GiftModal: React.FC<GiftModalProps> = ({ isOpen, onClose }) => {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <div className="flex-shrink-0">
                 <img 
-                    src="https://api.vietqr.io/image/mbbank-0326838898-print.png" 
+                    src="https://api.vietqr.io/image/vietcombank-0301000384961-print.png" 
                     alt="QR Code Mừng Cưới"
                     className="mx-auto rounded-md shadow-md w-40 h-40 object-contain"
                 />
             </div>
 
             <div className="text-left bg-gray-50 p-4 rounded-lg border w-full flex-grow">
-                <p className="mb-2"><strong className="text-gray-700">Ngân hàng:</strong> <span className="text-[#8d6e63]">MB Bank</span></p>
-                <p className="mb-2"><strong className="text-gray-700">Số tài khoản:</strong> <span className="text-[#8d6e63]">0326838898</span></p>
-                <p><strong className="text-gray-700">Chủ tài khoản:</strong> <span className="text-[#8d6e63]">QUANG LINH</span></p>
+                <p className="mb-2"><strong className="text-gray-700">Ngân hàng:</strong> <span className="text-[#8d6e63]">Vietcombank</span></p>
+                <p className="mb-2"><strong className="text-gray-700">Số tài khoản:</strong> <span className="text-[#8d6e63]">0301000384961</span></p>
+                <p><strong className="text-gray-700">Chủ tài khoản:</strong> <span className="text-[#8d6e63]">DO QUANG LINH</span></p>
             </div>
         </div>
 

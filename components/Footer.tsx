@@ -27,9 +27,7 @@ const Footer: React.FC = () => {
         src="https://i.postimg.cc/0NZFy3bc/bghead.jpg" 
         alt="Sảnh cưới lộng lẫy trang trí hoa"
         className="absolute inset-0 w-full h-full object-cover"
-        style={{
-          transform: `translateY(-${offset}px) scale(1.1)`,
-        }}
+        
       />
       <div className="relative bg-black bg-opacity-50 py-20">
         <h2 className="font-dancing text-5xl mb-4">Trân trọng cảm ơn!</h2>
