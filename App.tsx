@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Header from './components/Header';
 import InvitationSection from './components/InvitationSection';
@@ -10,7 +9,7 @@ import Footer from './components/Footer';
 
 const App: React.FC = () => {
   return (
-    <div className="bg-[#fdfaf6] text-gray-800 antialiased">
+    <div className="bg-[#fdfaf6] text-gray-700 font-cormorant">
       <Header />
       <main>
         <InvitationSection />
