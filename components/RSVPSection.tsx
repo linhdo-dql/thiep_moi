@@ -1,5 +1,5 @@
+
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import AnimatedSection from './AnimatedSection';
 import Divider from './Divider';
 import GiftModal from './GiftModal';
@@ -8,123 +8,142 @@ import { ref, push, serverTimestamp } from 'firebase/database';
 
 const RSVPSection: React.FC = () => {
   const [name, setName] = useState('');
-  const [attendance, setAttendance] = useState('attending');
+  const [attendance, setAttendance] = useState<'attending' | 'not_attending' | ''>('');
   const [message, setMessage] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isGiftModalOpen, setIsGiftModalOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting || !name.trim() || !message.trim()) {
-        setError('Vui lòng điền đầy đủ tên và lời chúc.');
-        return;
-    };
-
+    if (!name.trim() || !attendance) {
+      setError('Vui lòng nhập tên và chọn trạng thái tham dự.');
+      return;
+    }
+    setError(null);
     setIsSubmitting(true);
-    setError('');
 
     try {
       const wishesRef = ref(db, 'wishes');
       await push(wishesRef, {
-        name: name,
-        message: message,
-        attendance: attendance,
-        createdAt: serverTimestamp()
+        name: name.trim(),
+        attendance,
+        message: message.trim(),
+        createdAt: serverTimestamp(),
       });
-
       setIsSubmitted(true);
-
-      if (attendance === 'attending') {
-          setTimeout(() => {
-              setIsModalOpen(true);
-          }, 1500);
-      }
-    } catch (e) {
-      console.error("Error adding document: ", e);
-      setError("Đã có lỗi xảy ra khi gửi lời chúc. Vui lòng thử lại.");
+    } catch (err) {
+      console.error("Error submitting RSVP:", err);
+      setError('Đã có lỗi xảy ra. Vui lòng thử lại sau.');
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
-    <section id="rsvp" className="py-20 px-6 bg-white text-center">
-      <div className="max-w-2xl mx-auto">
-        <AnimatedSection>
-          <h2 className="font-dancing text-5xl text-[#a1887f]">Gửi Lời Chúc & Xác Nhận</h2>
-          <Divider />
-        </AnimatedSection>
-        <AnimatedSection>
-          {!isSubmitted ? (
-            <>
-              <p className="text-lg mb-8">
-                Sự hiện diện của bạn là món quà quý giá nhất. Vui lòng gửi lời chúc và xác nhận tham dự trước ngày <strong>10.12.2025</strong> nhé!
-              </p>
+    <>
+      <section id="rsvp" className="py-20 px-6 bg-white">
+        <div className="max-w-2xl mx-auto text-center">
+          <AnimatedSection>
+            <h2 className="font-dancing text-5xl text-[#a1887f]">Xác Nhận Tham Dự</h2>
+            <Divider />
+            <p className="font-cormorant text-lg text-gray-600 mb-8">
+              Sự hiện diện của bạn là niềm vinh hạnh của chúng tôi. Vui lòng gửi lời chúc và xác nhận tham dự trước ngày 01.11.2025.
+            </p>
+          </AnimatedSection>
+          
+          <AnimatedSection>
+            {isSubmitted ? (
+              <div className="bg-green-50 border-l-4 border-green-400 p-6 rounded-lg text-left shadow-md">
+                <h3 className="font-bold text-xl text-green-800">Cảm ơn bạn!</h3>
+                <p className="text-green-700 mt-2">Chúng tôi đã nhận được phản hồi của bạn. Hẹn gặp bạn tại buổi lễ!</p>
+              </div>
+            ) : (
               <form onSubmit={handleSubmit} className="space-y-6 text-left">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Tên của bạn</label>
+                  <label htmlFor="name" className="block text-md font-medium text-gray-700 mb-2">Họ và Tên</label>
                   <input
                     type="text"
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-[#a1887f] focus:border-[#a1887f] transition"
+                    placeholder="Tên của bạn"
                     required
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#a1887f] focus:outline-none"
-                    placeholder="Ví dụ: Nguyễn Văn A"
                   />
                 </div>
+                
                 <div>
-                   <label className="block text-sm font-medium text-gray-700 mb-2">Bạn sẽ tham dự chứ?</label>
-                   <div className="flex items-center space-x-6">
-                        <label className="flex items-center cursor-pointer">
-                            <input type="radio" name="attendance" value="attending" checked={attendance === 'attending'} onChange={(e) => setAttendance(e.target.value)} className="h-4 w-4 text-[#8d6e63] focus:ring-[#a1887f] border-gray-300"/>
-                            <span className="ml-2 text-gray-700">Chắc chắn sẽ tham dự</span>
-                        </label>
-                        <label className="flex items-center cursor-pointer">
-                            <input type="radio" name="attendance" value="not_attending" checked={attendance === 'not_attending'} onChange={(e) => setAttendance(e.target.value)} className="h-4 w-4 text-[#8d6e63] focus:ring-[#a1887f] border-gray-300"/>
-                            <span className="ml-2 text-gray-700">Rất tiếc không thể tham dự</span>
-                        </label>
-                   </div>
+                  <span className="block text-md font-medium text-gray-700 mb-2">Bạn sẽ tham dự chứ?</span>
+                  <div className="flex items-center space-x-6">
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="attendance"
+                        value="attending"
+                        checked={attendance === 'attending'}
+                        onChange={() => setAttendance('attending')}
+                        className="h-5 w-5 text-[#8d6e63] focus:ring-[#a1887f]"
+                      />
+                      <span className="text-gray-700">Chắc chắn rồi!</span>
+                    </label>
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="attendance"
+                        value="not_attending"
+                        checked={attendance === 'not_attending'}
+                        onChange={() => setAttendance('not_attending')}
+                        className="h-5 w-5 text-[#8d6e63] focus:ring-[#a1887f]"
+                      />
+                      <span className="text-gray-700">Tiếc quá, mình không thể</span>
+                    </label>
+                  </div>
                 </div>
-                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Lời chúc của bạn</label>
+
+                <div>
+                  <label htmlFor="message" className="block text-md font-medium text-gray-700 mb-2">Lời Chúc</label>
                   <textarea
                     id="message"
                     rows={4}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#a1887f] focus:outline-none"
-                    placeholder="Gửi gắm yêu thương..."
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-[#a1887f] focus:border-[#a1887f] transition"
+                    placeholder="Gửi lời chúc tới cặp đôi..."
                   ></textarea>
                 </div>
-                {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+                
+                {error && <p className="text-red-500 text-sm">{error}</p>}
+
                 <div className="text-center">
-                    <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="bg-[#8d6e63] text-white font-bold py-3 px-8 rounded-full hover:bg-[#a1887f] transition-colors duration-300 shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
-                    >
-                        {isSubmitting ? 'Đang gửi...' : 'Gửi Lời Chúc'}
-                    </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="bg-[#8d6e63] text-white font-bold py-3 px-12 rounded-full hover:bg-[#a1887f] transition-colors duration-300 shadow-lg disabled:bg-gray-400"
+                  >
+                    {isSubmitting ? 'Đang Gửi...' : 'Gửi Lời Chúc'}
+                  </button>
                 </div>
               </form>
-            </>
-          ) : (
-            <div className="text-center p-8 bg-green-50 border border-green-200 rounded-lg">
-                <h3 className="text-2xl font-semibold text-green-800">Cảm ơn bạn đã phản hồi!</h3>
-                <p className="mt-2 text-green-700">Lời chúc của bạn đã được ghi lại trong sổ lưu bút của chúng tôi.</p>
-                <Link to="/guestbook" className="inline-block mt-4 bg-green-600 text-white font-bold py-2 px-4 rounded-full hover:bg-green-700 transition-colors">
-                    Xem Sổ Lưu Bút
-                </Link>
+            )}
+          </AnimatedSection>
+
+          <AnimatedSection>
+            <div className="mt-16">
+                <p className="font-cormorant text-lg text-gray-600 mb-4">Hoặc bạn có thể gửi quà mừng cưới tại đây:</p>
+                <button 
+                  onClick={() => setIsGiftModalOpen(true)}
+                  className="bg-transparent text-[#8d6e63] font-bold py-3 px-8 rounded-full border-2 border-[#8d6e63] hover:bg-[#fdfaf6] transition-colors duration-300"
+                >
+                    Mừng Cưới Online
+                </button>
             </div>
-          )}
-        </AnimatedSection>
-      </div>
-      <GiftModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-    </section>
+          </AnimatedSection>
+        </div>
+      </section>
+      <GiftModal isOpen={isGiftModalOpen} onClose={() => setIsGiftModalOpen(false)} />
+    </>
   );
 };
 
