@@ -11,7 +11,7 @@ const GiftModal: React.FC<GiftModalProps> = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
       <div 
-        className="bg-white rounded-lg shadow-2xl p-8 max-w-md w-full text-center relative transform transition-all duration-300 scale-95 animate-modal-pop"
+        className="bg-white rounded-lg shadow-2xl p-6 max-w-lg w-full text-center relative transform transition-all duration-300 scale-95 animate-modal-pop"
         style={{ animation: 'modal-pop 0.3s ease-out forwards' }}
       >
         <button 
@@ -29,18 +29,20 @@ const GiftModal: React.FC<GiftModalProps> = ({ isOpen, onClose }) => {
             Món quà lớn nhất là sự hiện diện của bạn. Nếu bạn có nhã ý gửi tặng quà mừng, bạn có thể sử dụng thông tin bên dưới.
         </p>
 
-        <div className="mb-6">
-            <img 
-                src="https://api.vietqr.io/image/mbbank-0326838898-print.png" 
-                alt="QR Code Mừng Cưới"
-                className="mx-auto rounded-md shadow-md"
-            />
-        </div>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <div className="flex-shrink-0">
+                <img 
+                    src="https://api.vietqr.io/image/mbbank-0326838898-print.png" 
+                    alt="QR Code Mừng Cưới"
+                    className="mx-auto rounded-md shadow-md w-40 h-40 object-contain"
+                />
+            </div>
 
-        <div className="text-left bg-gray-50 p-4 rounded-lg border">
-            <p><strong className="text-gray-700">Ngân hàng:</strong> <span className="text-[#8d6e63]">MB Bank</span></p>
-            <p><strong className="text-gray-700">Số tài khoản:</strong> <span className="text-[#8d6e63]">0326838898</span></p>
-            <p><strong className="text-gray-700">Chủ tài khoản:</strong> <span className="text-[#8d6e63]">QUANG LINH</span></p>
+            <div className="text-left bg-gray-50 p-4 rounded-lg border w-full flex-grow">
+                <p className="mb-2"><strong className="text-gray-700">Ngân hàng:</strong> <span className="text-[#8d6e63]">MB Bank</span></p>
+                <p className="mb-2"><strong className="text-gray-700">Số tài khoản:</strong> <span className="text-[#8d6e63]">0326838898</span></p>
+                <p><strong className="text-gray-700">Chủ tài khoản:</strong> <span className="text-[#8d6e63]">QUANG LINH</span></p>
+            </div>
         </div>
 
         <button
