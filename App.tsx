@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import InvitationSection from './components/InvitationSection';
+import TimelineSection from './components/TimelineSection';
 import StorySection from './components/StorySection';
 import GallerySection from './components/GallerySection';
 import RSVPSection from './components/RSVPSection';
@@ -15,6 +16,7 @@ const MainInvitationPage: React.FC = () => (
     <Header />
     <main>
       <InvitationSection />
+      <TimelineSection />
       <StorySection />
       <GallerySection />
       <RSVPSection />

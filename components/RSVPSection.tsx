@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import AnimatedSection from './AnimatedSection';
 import Divider from './Divider';
@@ -25,12 +24,41 @@ const RSVPSection: React.FC = () => {
     setIsSubmitting(true);
 
     try {
+      // Lấy thông tin thiết bị (User Agent)
+      const deviceInfo = navigator.userAgent;
+      
+      let ipAddress = 'unknown';
+      let location = 'unknown';
+
+      try {
+        // 1. Lấy địa chỉ IP
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        if (ipResponse.ok) {
+            const ipData = await ipResponse.json();
+            ipAddress = ipData.ip;
+
+            // 2. Dùng IP để lấy thông tin vị trí địa lý
+            const geoResponse = await fetch(`http://ip-api.com/json/${ipAddress}`);
+            if (geoResponse.ok) {
+                const geoData = await geoResponse.json();
+                if (geoData.status === 'success') {
+                    location = `${geoData.city}, ${geoData.country}`;
+                }
+            }
+        }
+      } catch (infoError) {
+        console.warn("Could not fetch IP/Geo information:", infoError);
+      }
+
       const wishesRef = ref(db, 'wishes');
       await push(wishesRef, {
         name: name.trim(),
         attendance,
         message: message.trim(),
         createdAt: serverTimestamp(),
+        ipAddress: ipAddress,
+        deviceInfo: deviceInfo, // Lưu thông tin thiết bị
+        location: location,     // Lưu vị trí
       });
       setIsSubmitted(true);
     } catch (err) {
@@ -55,10 +83,17 @@ const RSVPSection: React.FC = () => {
           
           <AnimatedSection>
             {isSubmitted ? (
-              <div className="bg-green-50 border-l-4 border-green-400 p-6 rounded-lg text-left shadow-md">
-                <h3 className="font-bold text-xl text-green-800">Cảm ơn bạn!</h3>
-                <p className="text-green-700 mt-2">Chúng tôi đã nhận được phản hồi của bạn. Hẹn gặp bạn tại buổi lễ!</p>
-              </div>
+              attendance === 'attending' ? (
+                 <div className="bg-green-50 border-l-4 border-green-400 p-6 rounded-lg text-left shadow-md">
+                    <h3 className="font-bold text-xl text-green-800">Cảm ơn bạn đã xác nhận!</h3>
+                    <p className="text-green-700 mt-2">Chúng tôi rất vui khi có bạn chung vui. Hẹn gặp bạn tại buổi lễ!</p>
+                </div>
+              ) : (
+                <div className="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-lg text-left shadow-md">
+                    <h3 className="font-bold text-xl text-blue-800">Thật tiếc khi bạn không thể tham dự</h3>
+                    <p className="text-blue-700 mt-2">Cảm ơn bạn đã gửi lời chúc. Dù không thể có mặt, những lời chúc của bạn vẫn là nguồn động viên to lớn đối với chúng tôi. Trân trọng!</p>
+                </div>
+              )
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6 text-left">
                 <div>

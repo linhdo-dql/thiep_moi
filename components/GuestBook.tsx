@@ -4,6 +4,7 @@ import AnimatedSection from './AnimatedSection';
 import Divider from './Divider';
 import { db } from '../firebaseConfig';
 import { ref, onValue, query, orderByChild } from 'firebase/database';
+import * as XLSX from 'xlsx';
 
 interface GuestMessage {
     name: string;
@@ -56,18 +57,20 @@ const GuestBook: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  const downloadMessages = () => {
+  const downloadAsExcel = () => {
     if (messages.length === 0) return;
-    const messagesString = JSON.stringify(messages, null, 2);
-    const blob = new Blob([messagesString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'loi-chuc-dam-cuoi.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+
+    const formattedMessages = messages.map(msg => ({
+      "Tên Khách": msg.name,
+      "Lời Chúc": msg.message,
+      "Tình Trạng Tham Dự": msg.attendance === 'attending' ? 'Tham dự' : 'Không tham dự',
+      "Thời Gian Gửi": new Date(msg.date).toLocaleString('vi-VN')
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedMessages);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Lời Chúc");
+    XLSX.writeFile(workbook, "loi_chuc.xlsx");
   };
 
   return (
@@ -105,11 +108,11 @@ const GuestBook: React.FC = () => {
             </Link>
             {!isLoading && messages.length > 0 && (
               <button 
-                onClick={downloadMessages}
+                onClick={downloadAsExcel}
                 className="w-full sm:w-auto bg-white text-[#8d6e63] font-bold py-3 px-8 rounded-full border-2 border-[#8d6e63] hover:bg-gray-100 transition-colors duration-300 shadow-lg"
-                aria-label="Tải xuống lời chúc"
+                aria-label="Tải xuống lời chúc dưới dạng file Excel"
               >
-                Tải Lời Chúc
+                Tải File Excel
               </button>
             )}
         </div>
