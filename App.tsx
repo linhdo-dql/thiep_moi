@@ -13,8 +13,14 @@ import Footer from './components/Footer';
 import GuestBook from './components/GuestBook';
 import ToastNotification from './components/ToastNotification';
 import { db } from './firebaseConfig';
-import { ref, onChildAdded, query, orderByChild, startAt } from 'firebase/database';
+import { ref, onChildAdded, query, orderByChild, startAt, get } from 'firebase/database';
 
+interface Wish {
+  key: string;
+  name: string;
+  message: string;
+  createdAt: number;
+}
 
 const MainInvitationPage: React.FC = () => (
   <>
@@ -37,31 +43,90 @@ const App: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isSiteEntered, setIsSiteEntered] = useState(false);
-  const [toastWish, setToastWish] = useState<{ name: string; message: string } | null>(null);
+  
+  // State quản lý hàng đợi và thông báo lời chúc
+  const [allWishes, setAllWishes] = useState<Wish[]>([]);
+  const [wishQueue, setWishQueue] = useState<Wish[]>([]);
+  const [currentToastWish, setCurrentToastWish] = useState<{ name: string; message: string } | null>(null);
+  const displayedToastKeys = useRef(new Set<string>());
 
-  // Lắng nghe lời chúc mới trong thời gian thực
+  // Effect để tải lời chúc ban đầu và lắng nghe lời chúc mới
   useEffect(() => {
-    if (!isSiteEntered) return; // Chỉ bắt đầu lắng nghe sau khi người dùng vào trang
+    if (!isSiteEntered) return;
 
     const wishesRef = ref(db, 'wishes');
-    // Truy vấn những lời chúc được tạo ra kể từ khi trang được tải
-    const wishesQuery = query(
+    const initialTimestamp = Date.now();
+
+    // 1. Tải tất cả lời chúc đã có
+    const fetchInitialWishes = async () => {
+      const snapshot = await get(query(wishesRef, orderByChild('createdAt')));
+      if (snapshot.exists()) {
+        const wishesData = snapshot.val();
+        const loadedWishes: Wish[] = Object.keys(wishesData).map(key => ({
+          key,
+          ...wishesData[key],
+        }));
+
+        loadedWishes.forEach(w => displayedToastKeys.current.add(w.key));
+        
+        // Xáo trộn để hiển thị ngẫu nhiên
+        const shuffledWishes = [...loadedWishes].sort(() => Math.random() - 0.5);
+        setAllWishes(loadedWishes);
+        setWishQueue(shuffledWishes);
+      }
+    };
+
+    fetchInitialWishes();
+
+    // 2. Lắng nghe những lời chúc mới được thêm vào sau khi trang tải
+    const newWishesQuery = query(
       wishesRef,
       orderByChild('createdAt'),
-      startAt(Date.now() - 2000) // Bắt đầu từ 2 giây trước để tránh race condition
+      startAt(initialTimestamp)
     );
 
-    const unsubscribe = onChildAdded(wishesQuery, (snapshot) => {
-      const newWish = snapshot.val();
-      if (newWish && newWish.name && newWish.message) {
-        // Cập nhật state để hiển thị thông báo
-        setToastWish({ name: newWish.name, message: newWish.message });
+    const unsubscribe = onChildAdded(newWishesQuery, (snapshot) => {
+      const newWish = { key: snapshot.key as string, ...snapshot.val() };
+      
+      // Tránh hiển thị trùng lặp nếu có race condition
+      if (newWish && newWish.name && newWish.message && !displayedToastKeys.current.has(newWish.key)) {
+        displayedToastKeys.current.add(newWish.key);
+        // Thêm lời chúc mới vào đầu hàng đợi để ưu tiên hiển thị
+        setWishQueue(prevQueue => [newWish, ...prevQueue]);
+        setAllWishes(prevAll => [...prevAll, newWish]);
       }
     });
 
-    // Dọn dẹp listener khi component bị gỡ bỏ
     return () => unsubscribe();
-  }, [isSiteEntered]); // Kích hoạt effect khi người dùng vào trang
+  }, [isSiteEntered]);
+
+  // Effect để quản lý việc hiển thị thông báo từ hàng đợi
+  useEffect(() => {
+    if (currentToastWish || wishQueue.length === 0 || !isSiteEntered) {
+      return;
+    }
+
+    // Đặt độ trễ 2 giây giữa các thông báo
+    const timer = setTimeout(() => {
+      const nextQueue = [...wishQueue];
+      const nextWish = nextQueue.shift(); // Lấy lời chúc tiếp theo
+
+      // Nếu hàng đợi trống, lấp đầy lại bằng tất cả lời chúc và xáo trộn
+      if (nextQueue.length === 0 && allWishes.length > 0) {
+        const reshuffledWishes = [...allWishes].sort(() => Math.random() - 0.5);
+        setWishQueue(reshuffledWishes);
+      } else {
+        setWishQueue(nextQueue);
+      }
+
+      if (nextWish) {
+        setCurrentToastWish({ name: nextWish.name, message: nextWish.message });
+      }
+    }, 2000); // 2 giây chờ trước khi hiển thị thông báo tiếp theo
+
+    return () => clearTimeout(timer);
+  }, [currentToastWish, wishQueue, allWishes, isSiteEntered]);
+
 
   const handleSiteEnter = () => {
     setIsSiteEntered(true);
@@ -161,11 +226,11 @@ const App: React.FC = () => {
           </button>
           
           {/* Component Thông Báo Lời Chúc Mới */}
-          {toastWish && (
+          {currentToastWish && (
             <ToastNotification
-              name={toastWish.name}
-              message={toastWish.message}
-              onClose={() => setToastWish(null)}
+              name={currentToastWish.name}
+              message={currentToastWish.message}
+              onClose={() => setCurrentToastWish(null)}
             />
           )}
 
