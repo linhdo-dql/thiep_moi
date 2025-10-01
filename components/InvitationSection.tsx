@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import AnimatedSection from './AnimatedSection';
 import Divider from './Divider';
 
@@ -57,6 +58,9 @@ const CountdownTimer: React.FC<{ targetDate: string }> = ({ targetDate }) => {
 const InvitationSection: React.FC = () => {
   const brideHouseMapUrl = "https://maps.app.goo.gl/35Qo8gVj5cy3gPbg8";
   const receptionMapUrl = "https://maps.app.goo.gl/eQNWBQvSyh5jKTap7";
+  
+  const [searchParams] = useSearchParams();
+  const guestName = searchParams.get('to') || 'Quý Vị';
 
   return (
     <section id="invitation" className="py-20 px-6 bg-[#fdfaf6]">
@@ -69,13 +73,15 @@ const InvitationSection: React.FC = () => {
         </AnimatedSection>
         
         <AnimatedSection>
-            <div className="max-w-4xl mx-auto border-2 border-gray-200 rounded-lg p-12 shadow-sm mb-16">
-                <p className="mb-4 text-lg">Trân trọng kính mời bạn đến tham dự</p>
-                <h3 className="font-dancing text-4xl text-[#8d6e63] mb-6">Lễ Thành Hôn</h3>
+             <div className="max-w-4xl mx-auto border-2 border-gray-200 rounded-lg p-12 shadow-sm mb-16">
+                <p className="font-cormorant text-xl text-gray-700 leading-relaxed mb-8">
+                    Được sự cho phép của hai bên gia đình, chúng tôi vô cùng hạnh phúc báo tin vui và trân trọng kính mời <span className="font-bold text-[#8d6e63]">{guestName}</span> đến tham dự buổi tiệc thân mật mừng Lễ Thành Hôn của hai con chúng tôi:
+                </p>
+                
                 <div className="flex flex-col md:flex-row items-center justify-center md:space-x-8 space-y-4 md:space-y-0">
                     <div className="md:text-right">
-                        <p className="font-bold text-2xl">Quang Linh</p>
-                        <p className="font-cormorant text-md mt-1">Con trai Ông Đỗ Văn Lộc<br/>& Bà Nguyễn Thị Phương</p>
+                        <p className="font-bold text-3xl font-cormorant text-[#8d6e63]">Quang Linh</p>
+                        <p className="font-cormorant text-lg mt-1">Con trai Ông Đỗ Văn Lộc<br/>& Bà Nguyễn Thị Phương</p>
                     </div>
                     <div className="px-4">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-[#a1887f]" fill="none" viewBox="0 0 24 24" strokeWidth="1" stroke="currentColor">
@@ -83,10 +89,16 @@ const InvitationSection: React.FC = () => {
                         </svg>
                     </div>
                     <div className="md:text-left">
-                        <p className="font-bold text-2xl">Thanh Loan</p>
-                        <p className="font-cormorant text-md mt-1">Con gái Ông Nguyễn Văn Tuấn<br/>& Bà Nguyễn Thị Hà</p>
+                        <p className="font-bold text-3xl font-cormorant text-[#8d6e63]">Thanh Loan</p>
+                        <p className="font-cormorant text-lg mt-1">Con gái Ông Nguyễn Văn Tuấn<br/>& Bà Nguyễn Thị Hà</p>
                     </div>
                 </div>
+
+                <p className="font-cormorant text-xl text-gray-700 leading-relaxed mt-8">
+                    Sự hiện diện của Quý vị là niềm vinh hạnh to lớn và là lời chúc phúc quý giá nhất cho ngày vui của hai con chúng tôi.
+                    <br/><br/>
+                    Rất hân hạnh được đón tiếp!
+                </p>
             </div>
         </AnimatedSection>
         

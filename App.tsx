@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route, useSearchParams } from 'react-router-dom';
 import Header from './components/Header';
 import SaveTheDateSection from './components/SaveTheDateSection';
 import InvitationSection from './components/InvitationSection';
@@ -39,25 +39,25 @@ const MainInvitationPage: React.FC = () => (
   </>
 );
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isSiteEntered, setIsSiteEntered] = useState(false);
   
-  // State quản lý hàng đợi và thông báo lời chúc
+  const [searchParams] = useSearchParams();
+  const guestName = searchParams.get('to') || 'Bạn và Gia Đình';
+
   const [allWishes, setAllWishes] = useState<Wish[]>([]);
   const [wishQueue, setWishQueue] = useState<Wish[]>([]);
   const [currentToastWish, setCurrentToastWish] = useState<{ name: string; message: string } | null>(null);
   const displayedToastKeys = useRef(new Set<string>());
 
-  // Effect để tải lời chúc ban đầu và lắng nghe lời chúc mới
   useEffect(() => {
     if (!isSiteEntered) return;
 
     const wishesRef = ref(db, 'wishes');
     const initialTimestamp = Date.now();
 
-    // 1. Tải tất cả lời chúc đã có
     const fetchInitialWishes = async () => {
       const snapshot = await get(query(wishesRef, orderByChild('createdAt')));
       if (snapshot.exists()) {
@@ -69,7 +69,6 @@ const App: React.FC = () => {
 
         loadedWishes.forEach(w => displayedToastKeys.current.add(w.key));
         
-        // Xáo trộn để hiển thị ngẫu nhiên
         const shuffledWishes = [...loadedWishes].sort(() => Math.random() - 0.5);
         setAllWishes(loadedWishes);
         setWishQueue(shuffledWishes);
@@ -78,7 +77,6 @@ const App: React.FC = () => {
 
     fetchInitialWishes();
 
-    // 2. Lắng nghe những lời chúc mới được thêm vào sau khi trang tải
     const newWishesQuery = query(
       wishesRef,
       orderByChild('createdAt'),
@@ -88,10 +86,8 @@ const App: React.FC = () => {
     const unsubscribe = onChildAdded(newWishesQuery, (snapshot) => {
       const newWish = { key: snapshot.key as string, ...snapshot.val() };
       
-      // Tránh hiển thị trùng lặp nếu có race condition
       if (newWish && newWish.name && newWish.message && !displayedToastKeys.current.has(newWish.key)) {
         displayedToastKeys.current.add(newWish.key);
-        // Thêm lời chúc mới vào đầu hàng đợi để ưu tiên hiển thị
         setWishQueue(prevQueue => [newWish, ...prevQueue]);
         setAllWishes(prevAll => [...prevAll, newWish]);
       }
@@ -100,18 +96,15 @@ const App: React.FC = () => {
     return () => unsubscribe();
   }, [isSiteEntered]);
 
-  // Effect để quản lý việc hiển thị thông báo từ hàng đợi
   useEffect(() => {
     if (currentToastWish || wishQueue.length === 0 || !isSiteEntered) {
       return;
     }
 
-    // Đặt độ trễ 2 giây giữa các thông báo
     const timer = setTimeout(() => {
       const nextQueue = [...wishQueue];
-      const nextWish = nextQueue.shift(); // Lấy lời chúc tiếp theo
+      const nextWish = nextQueue.shift();
 
-      // Nếu hàng đợi trống, lấp đầy lại bằng tất cả lời chúc và xáo trộn
       if (nextQueue.length === 0 && allWishes.length > 0) {
         const reshuffledWishes = [...allWishes].sort(() => Math.random() - 0.5);
         setWishQueue(reshuffledWishes);
@@ -122,7 +115,7 @@ const App: React.FC = () => {
       if (nextWish) {
         setCurrentToastWish({ name: nextWish.name, message: nextWish.message });
       }
-    }, 2000); // 2 giây chờ trước khi hiển thị thông báo tiếp theo
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [currentToastWish, wishQueue, allWishes, isSiteEntered]);
@@ -179,7 +172,9 @@ const App: React.FC = () => {
                         <span>Loan</span>
                     </div>
                 </h1>
-                <p className="font-cormorant text-lg md:text-xl mb-10 tracking-wider">Trân trọng mời bạn tham dự lễ cưới</p>
+                <p className="font-cormorant text-lg md:text-xl mb-10 tracking-wider">
+                  Trân trọng mời <span className="font-bold text-yellow-200">{guestName}</span> tham dự lễ cưới
+                </p>
                 <button
                     onClick={handleSiteEnter}
                     className="bg-white/10 backdrop-blur-md border border-white/20 text-white font-cormorant text-lg py-3 px-12 rounded-full hover:bg-white/20 transition-colors duration-300 shadow-xl"
@@ -201,12 +196,10 @@ const App: React.FC = () => {
 
       {isSiteEntered && (
         <div className="animate-app-fade-in">
-          <HashRouter>
-            <Routes>
-              <Route path="/" element={<MainInvitationPage />} />
-              <Route path="/guestbook" element={<GuestBook />} />
-            </Routes>
-          </HashRouter>
+          <Routes>
+            <Route path="/" element={<MainInvitationPage />} />
+            <Route path="/guestbook" element={<GuestBook />} />
+          </Routes>
 
           <button
             onClick={toggleMusic}
@@ -225,7 +218,6 @@ const App: React.FC = () => {
             )}
           </button>
           
-          {/* Component Thông Báo Lời Chúc Mới */}
           {currentToastWish && (
             <ToastNotification
               name={currentToastWish.name}
@@ -248,5 +240,11 @@ const App: React.FC = () => {
     </div>
   );
 };
+
+const App: React.FC = () => (
+  <HashRouter>
+    <AppContent />
+  </HashRouter>
+);
 
 export default App;
