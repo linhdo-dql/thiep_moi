@@ -1,33 +1,17 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React from 'react';
 
 const Footer: React.FC = () => {
-  const footerRef = useRef<HTMLElement>(null);
-  const [offset, setOffset] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (footerRef.current) {
-        const top = footerRef.current.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
-        if (top < windowHeight) {
-          setOffset((windowHeight - top) * 0.2); 
-        }
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
     <footer 
-      ref={footerRef}
       className="text-center text-white relative overflow-hidden"
     >
       <img 
         src="https://i.postimg.cc/0NZFy3bc/bghead.jpg" 
         alt="Sảnh cưới lộng lẫy trang trí hoa"
         className="absolute inset-0 w-full h-full object-cover"
-        
+        loading="lazy"
+        width="1920"
+        height="1280"
       />
       <div className="relative bg-black bg-opacity-50 py-20">
         <h2 className="font-dancing text-5xl mb-4">Trân trọng cảm ơn!</h2>

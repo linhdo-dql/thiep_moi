@@ -3,8 +3,8 @@ import AnimatedSection from './AnimatedSection';
 import Divider from './Divider';
 
 const schedule = [
-  { time: '09:00', title: 'Đón Khách & Khai Tiệc', description: 'Gia đình trân trọng đón tiếp quý khách và bắt đầu tiệc mừng buổi sáng.' },
-  { time: '11:30', title: 'Kết Thúc Tiệc Sáng', description: 'Gia đình gửi lời cảm ơn chân thành tới các vị khách đã tham dự.' },
+  { time: '17:00 - 12/11/2025', title: 'Đón Khách & Khai Tiệc', description: 'Gia đình trân trọng đón tiếp quý khách và bắt đầu tiệc mừng buổi sáng.' },
+  { time: '20:00 - 12/11/2025', title: 'Kết Thúc Tiệc & Giao lưu văn nghệ', description: 'Gia đình gửi lời cảm ơn chân thành tới các vị khách đã tham dự.' },
   { time: '16:30', title: 'Đón Khách Lễ Thành Hôn', description: 'Chào đón quý khách cho nghi lễ chính thức và trang trọng nhất.' },
   { time: '17:00', title: 'Nghi Lễ Thành Hôn', description: 'Khoảnh khắc cô dâu và chú rể trao lời thề nguyện và chính thức nên duyên vợ chồng.' },
   { time: '18:00', title: 'Dự Tiệc Tối & Giao Lưu', description: 'Kính mời quý khách cùng dùng bữa tối thân mật và chia vui cùng gia đình.' },

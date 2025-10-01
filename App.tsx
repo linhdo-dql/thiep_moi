@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
+import SaveTheDateSection from './components/SaveTheDateSection';
 import InvitationSection from './components/InvitationSection';
 import TimelineSection from './components/TimelineSection';
 import StorySection from './components/StorySection';
@@ -10,11 +11,16 @@ import ContactSection from './components/ContactSection';
 import MapSection from './components/MapSection';
 import Footer from './components/Footer';
 import GuestBook from './components/GuestBook';
+import ToastNotification from './components/ToastNotification';
+import { db } from './firebaseConfig';
+import { ref, onChildAdded, query, orderByChild, startAt } from 'firebase/database';
+
 
 const MainInvitationPage: React.FC = () => (
   <>
     <Header />
     <main>
+      <SaveTheDateSection />
       <InvitationSection />
       <TimelineSection />
       <StorySection />
@@ -31,11 +37,35 @@ const App: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isSiteEntered, setIsSiteEntered] = useState(false);
+  const [toastWish, setToastWish] = useState<{ name: string; message: string } | null>(null);
+
+  // Lắng nghe lời chúc mới trong thời gian thực
+  useEffect(() => {
+    if (!isSiteEntered) return; // Chỉ bắt đầu lắng nghe sau khi người dùng vào trang
+
+    const wishesRef = ref(db, 'wishes');
+    // Truy vấn những lời chúc được tạo ra kể từ khi trang được tải
+    const wishesQuery = query(
+      wishesRef,
+      orderByChild('createdAt'),
+      startAt(Date.now() - 2000) // Bắt đầu từ 2 giây trước để tránh race condition
+    );
+
+    const unsubscribe = onChildAdded(wishesQuery, (snapshot) => {
+      const newWish = snapshot.val();
+      if (newWish && newWish.name && newWish.message) {
+        // Cập nhật state để hiển thị thông báo
+        setToastWish({ name: newWish.name, message: newWish.message });
+      }
+    });
+
+    // Dọn dẹp listener khi component bị gỡ bỏ
+    return () => unsubscribe();
+  }, [isSiteEntered]); // Kích hoạt effect khi người dùng vào trang
 
   const handleSiteEnter = () => {
     setIsSiteEntered(true);
     const audio = audioRef.current;
-    // Chỉ phát nhạc nếu có một nguồn nhạc hợp lệ
     if (audio && audio.src) {
       audio.play().then(() => {
         setIsPlaying(true);
@@ -60,15 +90,9 @@ const App: React.FC = () => {
 
   return (
     <div className="bg-[#fdfaf6] text-gray-700 font-cormorant">
-      {/* 
-        TODO: THAY THẾ BẰNG LIÊN KẾT TRỰC TIẾP ĐẾN FILE NHẠC CỦA BẠN
-        Hãy tải file nhạc .mp3 của bạn lên một dịch vụ lưu trữ (ví dụ: Imgur, Catbox, hoặc hosting riêng)
-        và dán đường dẫn trực tiếp vào thuộc tính `src` dưới đây.
-        Ví dụ: src="https://your-domain.com/your-music.mp3"
-      */}
       <audio 
         ref={audioRef} 
-        src="https://files.catbox.moe/ux7bsp.mp3" // <-- THAY THẾ ĐƯỜNG DẪN NHẠC CỦA BẠN TẠI ĐÂY
+        src="https://files.catbox.moe/ux7bsp.mp3"
         loop 
       />
 
@@ -135,6 +159,16 @@ const App: React.FC = () => {
               </svg>
             )}
           </button>
+          
+          {/* Component Thông Báo Lời Chúc Mới */}
+          {toastWish && (
+            <ToastNotification
+              name={toastWish.name}
+              message={toastWish.message}
+              onClose={() => setToastWish(null)}
+            />
+          )}
+
            <style>{`
             @keyframes app-fade-in {
               from { opacity: 0; }

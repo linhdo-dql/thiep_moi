@@ -115,7 +115,7 @@ const InvitationSection: React.FC = () => {
                 </svg>
                 <div className="flex-grow">
                   <h4 className="font-dancing text-3xl text-[#a1887f] mb-3">Hôn Lễ</h4>
-                  <p className="text-xl font-semibold">17:00 - 13.11.2025</p>
+                  <p className="text-xl font-semibold">17:00 - 12.11.2025</p>
                   <p className="mt-2">Tại tư gia nhà trai</p>
                   <p>Thôn Bình An, Xã Văn Môn, Tỉnh Bắc Ninh</p>
                 </div>
