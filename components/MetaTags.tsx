@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, type FC } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
-const MetaTags: React.FC = () => {
+const MetaTags: FC = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   
@@ -47,9 +47,10 @@ const MetaTags: React.FC = () => {
   };
   
   const getCurrentUrl = (): string => {
-    const baseUrl = 'https://thiepmoi-2ba7b.web.app';
-    const hash = window.location.hash || '#/';
-    return `${baseUrl}${hash}`;
+    // Tạo URL đầy đủ với query params (không có hash) để crawler đọc được
+    const fullUrl = new URL(window.location.href);
+    fullUrl.hash = ''; // Bỏ hash để crawler đọc được
+    return fullUrl.toString();
   };
   
   useEffect(() => {

@@ -8,7 +8,8 @@
     
     <!-- Open Graph / Facebook - Đặt gần đầu để Facebook nhận diện -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://thiepmoi-2ba7b.web.app/" />
+    <!-- og:url sẽ được set bởi script bên dưới với query params -->
+    <meta property="og:url" content="https://thiepmoi-2ba7b.web.app/" id="og-url-dynamic" />
     <meta property="og:title" content="Thiệp Cưới Online | Quang Linh &amp; Thanh Loan" />
     <meta property="og:description" content="Trân trọng mời Quý vị tham dự lễ cưới của Quang Linh &amp; Thanh Loan" />
     <meta property="og:image" content="https://thiepmoi-2ba7b.web.app/images/3_2.jpg" />
@@ -20,6 +21,42 @@
     <meta property="og:image:alt" content="Thiệp Cưới Online - Quang Linh &amp; Thanh Loan" />
     <meta property="og:site_name" content="Thiệp Cưới Online" />
     <meta property="og:locale" content="vi_VN" />
+    
+    <!-- Set hash route ngay khi HTML load (TRƯỚC KHI React khởi tạo) -->
+    <script>
+      // Set hash route ngay khi HTML load (trước khi React khởi tạo)
+      // Sử dụng blocking script để đảm bảo chạy đồng bộ
+      (function() {
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const route = urlParams.get('route'); // 'bride' hoặc 'groom' hoặc null
+          const currentHash = window.location.hash || '';
+          
+          // Nếu có query param 'route'
+          if (route) {
+            const expectedHash = route === 'bride' ? '#/bride' : '#/';
+            // Nếu hash không đúng hoặc chưa có, set lại hash ngay lập tức
+            if (currentHash !== expectedHash && !currentHash.startsWith(expectedHash)) {
+              // Sử dụng history.replaceState để set hash mà không reload
+              const newUrl = window.location.pathname + window.location.search + expectedHash;
+              window.history.replaceState(null, '', newUrl);
+              // Đảm bảo window.location.hash được cập nhật
+              window.location.hash = expectedHash;
+            }
+          }
+          // Nếu không có query param 'route' nhưng có hash, giữ nguyên hash
+          else if (currentHash && currentHash.startsWith('#/')) {
+            // Hash đã có, không cần làm gì
+          }
+          // Nếu không có cả route và hash, set mặc định là #/
+          else if (!currentHash || currentHash === '') {
+            window.location.hash = '#/';
+          }
+        } catch (e) {
+          console.error('Error setting hash route:', e);
+        }
+      })();
+    </script>
     
     <!-- Schema.org for better support -->
     <meta itemprop="name" content="Thiệp Cưới Online | Quang Linh &amp; Thanh Loan" />
@@ -86,35 +123,6 @@
 }
 </script>
 <script>
-  // Set hash route ngay khi HTML load (trước khi React khởi tạo)
-  // Đọc query params từ URL gốc và set hash route tương ứng
-  (function() {
-    try {
-      const urlParams = new URLSearchParams(window.location.search);
-      const route = urlParams.get('route'); // 'bride' hoặc 'groom' hoặc null
-      const currentHash = window.location.hash || '';
-      
-      // Nếu có query param 'route'
-      if (route) {
-        const expectedHash = route === 'bride' ? '#/bride' : '#/';
-        // Nếu hash không đúng hoặc chưa có, set lại hash (không reload)
-        if (currentHash !== expectedHash && !currentHash.startsWith(expectedHash)) {
-          window.location.hash = expectedHash;
-        }
-      }
-      // Nếu không có query param 'route' nhưng có hash, giữ nguyên hash
-      else if (currentHash && currentHash.startsWith('#/')) {
-        // Hash đã có, không cần làm gì
-      }
-      // Nếu không có cả route và hash, set mặc định là #/
-      else if (!currentHash || currentHash === '') {
-        window.location.hash = '#/';
-      }
-    } catch (e) {
-      console.error('Error setting hash route:', e);
-    }
-  })();
-  
   // Update meta tags for Facebook/Messenger crawler (runs before React)
   // Đọc query params từ URL gốc (không phải hash) để crawler có thể đọc được
   (function() {
@@ -132,9 +140,15 @@
     const imageUrl = baseUrl + '/images/3_2.jpg';
     
     // Tạo URL đầy đủ với query params (không có hash) để crawler đọc
-    const fullUrl = new URL(window.location.href);
-    fullUrl.hash = ''; // Bỏ hash để crawler đọc được
-    const url = fullUrl.toString();
+    // Đảm bảo URL bao gồm tất cả query params hiện tại
+    let url;
+    if (window.location.search) {
+      // Nếu có query params, tạo URL với query params (không có hash)
+      url = window.location.origin + window.location.pathname + window.location.search;
+    } else {
+      // Nếu không có query params, dùng base URL
+      url = window.location.origin + window.location.pathname;
+    }
     
     let title = 'Thiệp Cưới Online | Quang Linh & Thanh Loan';
     let description = 'Trân trọng mời Quý vị tham dự lễ cưới của Quang Linh & Thanh Loan';
@@ -172,7 +186,13 @@
     document.title = title;
     
     // Update Open Graph
-    updateMeta('og:url', url, true);
+    // Đảm bảo og:url được update với query params
+    const ogUrlMeta = document.querySelector('meta[property="og:url"]');
+    if (ogUrlMeta) {
+      ogUrlMeta.setAttribute('content', url);
+    } else {
+      updateMeta('og:url', url, true);
+    }
     updateMeta('og:title', title, true);
     updateMeta('og:description', description, true);
     updateMeta('og:image', imageUrl, true);
