@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSearchParams, useLocation } from 'react-router-dom';
 
 interface GiftModalProps {
   isOpen: boolean;
@@ -6,6 +7,32 @@ interface GiftModalProps {
 }
 
 const GiftModal: React.FC<GiftModalProps> = ({ isOpen, onClose }) => {
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const guestRole = searchParams.get('role') || '';
+  const isBrideRoute = location.pathname === '/bride' || window.location.hash.includes('/bride');
+
+  // Hàm lấy vai vế hiển thị cho người được mời
+  const getGuestRoleDisplay = (role: string): string => {
+    if (!role) return 'Quý vị';
+    return role;
+  };
+
+  const guestRoleDisplay = getGuestRoleDisplay(guestRole);
+
+  // Xác định thông tin ngân hàng dựa trên route
+  const bankInfo = isBrideRoute ? {
+    qrUrl: 'https://api.vietqr.io/image/bidv-43310000565319-print.png',
+    bankName: 'BIDV',
+    accountNumber: '43310000565319',
+    accountHolder: 'NGUYEN THANH LOAN'
+  } : {
+    qrUrl: 'https://api.vietqr.io/image/vietcombank-0301000384961-print.png',
+    bankName: 'Vietcombank',
+    accountNumber: '0301000384961',
+    accountHolder: 'DO QUANG LINH'
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -26,22 +53,22 @@ const GiftModal: React.FC<GiftModalProps> = ({ isOpen, onClose }) => {
         
         <h3 className="font-dancing text-4xl text-[#a1887f] mb-4">Mừng Cưới Online</h3>
         <p className="font-cormorant text-lg text-gray-600 mb-6">
-            Món quà lớn nhất là sự hiện diện của bạn. Nếu bạn có nhã ý gửi tặng quà mừng, bạn có thể sử dụng thông tin bên dưới.
+            Món quà lớn nhất là sự hiện diện của {guestRoleDisplay}. Nếu {guestRoleDisplay} có nhã ý gửi tặng quà mừng, {guestRoleDisplay} có thể sử dụng thông tin bên dưới.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <div className="flex-shrink-0">
                 <img 
-                    src="https://api.vietqr.io/image/vietcombank-0301000384961-print.png" 
+                    src={bankInfo.qrUrl}
                     alt="QR Code Mừng Cưới"
                     className="mx-auto rounded-md shadow-md w-40 h-40 object-contain"
                 />
             </div>
 
             <div className="text-left bg-gray-50 p-4 rounded-lg border w-full flex-grow">
-                <p className="mb-2"><strong className="text-gray-700">Ngân hàng:</strong> <span className="text-[#8d6e63]">Vietcombank</span></p>
-                <p className="mb-2"><strong className="text-gray-700">Số tài khoản:</strong> <span className="text-[#8d6e63]">0301000384961</span></p>
-                <p><strong className="text-gray-700">Chủ tài khoản:</strong> <span className="text-[#8d6e63]">DO QUANG LINH</span></p>
+                <p className="mb-2"><strong className="text-gray-700">Ngân hàng:</strong> <span className="text-[#8d6e63]">{bankInfo.bankName}</span></p>
+                <p className="mb-2"><strong className="text-gray-700">Số tài khoản:</strong> <span className="text-[#8d6e63]">{bankInfo.accountNumber}</span></p>
+                <p><strong className="text-gray-700">Chủ tài khoản:</strong> <span className="text-[#8d6e63]">{bankInfo.accountHolder}</span></p>
             </div>
         </div>
 

@@ -1,16 +1,65 @@
 import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 import AnimatedSection from './AnimatedSection';
 import Divider from './Divider';
 
 const ContactSection: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const guestRole = searchParams.get('role') || '';
+  const isParent = searchParams.get('parent') === 'true';
+
+  // Hàm xác định cách xưng hô dựa trên vai vế
+  const getAddressing = (role: string, parent: boolean): string => {
+    let baseAddressing: string;
+    
+    switch (role) {
+      case 'Anh':
+      case 'Chị':
+        baseAddressing = 'chúng em';
+        break;
+      case 'Cô':
+      case 'Chú':
+      case 'Bác':
+      case 'Dì':
+        baseAddressing = 'chúng cháu';
+        break;
+      case 'Ông':
+      case 'Bà':
+        baseAddressing = 'chúng con';
+        break;
+      case 'Em':
+        baseAddressing = 'anh chị';
+        break;
+      default:
+        baseAddressing = 'chúng tôi';
+    }
+    
+    // Nếu là phụ huynh, thêm "hai con " phía trước cách xưng hô
+    if (parent) {
+      return `hai con ${baseAddressing}`;
+    }
+    
+    return baseAddressing;
+  };
+
+  const addressing = getAddressing(guestRole, isParent);
+
+  // Hàm lấy vai vế hiển thị cho người được mời
+  const getGuestRoleDisplay = (role: string): string => {
+    if (!role) return 'Quý vị';
+    return role;
+  };
+
+  const guestRoleDisplay = getGuestRoleDisplay(guestRole);
+
   return (
-    <section id="contact" className="py-20 px-6 bg-[#fdfaf6]">
+    <section id="contact" className="py-12 px-6 bg-[#fdfaf6]">
       <div className="max-w-6xl mx-auto text-center">
         <AnimatedSection>
-          <h2 className="font-dancing text-5xl text-[#a1887f]">Liên Hệ & Chỉ Dẫn</h2>
+          <h2 className="font-dancing text-5xl text-[#a1887f]" style={{ padding: '20px' }}>Liên Hệ & Chỉ Dẫn</h2>
           <Divider />
           <p className="text-lg mb-12">
-            Nếu bạn có bất kỳ câu hỏi nào, đừng ngần ngại liên hệ với chúng tôi.
+            Nếu {guestRoleDisplay} có bất kỳ câu hỏi nào, đừng ngần ngại liên hệ với {addressing}.
           </p>
         </AnimatedSection>
         <AnimatedSection>

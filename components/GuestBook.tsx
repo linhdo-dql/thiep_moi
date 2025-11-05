@@ -77,7 +77,7 @@ const GuestBook: React.FC = () => {
     <div className="py-20 px-6 bg-[#fdfaf6] min-h-screen">
       <div className="max-w-3xl mx-auto text-center">
         <AnimatedSection>
-            <h1 className="font-dancing text-6xl text-[#a1887f]">Sổ Lưu Bút</h1>
+            <h1 className="font-dancing text-6xl text-[#a1887f]" style={{ padding: '20px' }}>Sổ Lưu Bút</h1>
             <p className="mt-4 text-lg">Những lời chúc phúc từ những người thân yêu.</p>
             <Divider />
         </AnimatedSection>

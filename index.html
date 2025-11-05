@@ -4,10 +4,47 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Thiệp Cưới Online | Quang Linh & Thanh Loan</title>
+    <meta name="description" content="Trân trọng mời Quý vị tham dự lễ cưới của Quang Linh &amp; Thanh Loan" />
+    
+    <!-- Open Graph / Facebook - Đặt gần đầu để Facebook nhận diện -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://thiepmoi-2ba7b.web.app/" />
+    <meta property="og:title" content="Thiệp Cưới Online | Quang Linh &amp; Thanh Loan" />
+    <meta property="og:description" content="Trân trọng mời Quý vị tham dự lễ cưới của Quang Linh &amp; Thanh Loan" />
+    <meta property="og:image" content="https://thiepmoi-2ba7b.web.app/images/3_2.jpg" />
+    <meta property="og:image:url" content="https://thiepmoi-2ba7b.web.app/images/3_2.jpg" />
+    <meta property="og:image:secure_url" content="https://thiepmoi-2ba7b.web.app/images/3_2.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="1800" />
+    <meta property="og:image:alt" content="Thiệp Cưới Online - Quang Linh &amp; Thanh Loan" />
+    <meta property="og:site_name" content="Thiệp Cưới Online" />
+    <meta property="og:locale" content="vi_VN" />
+    
+    <!-- Schema.org for better support -->
+    <meta itemprop="name" content="Thiệp Cưới Online | Quang Linh &amp; Thanh Loan" />
+    <meta itemprop="description" content="Trân trọng mời Quý vị tham dự lễ cưới của Quang Linh &amp; Thanh Loan" />
+    <meta itemprop="image" content="https://thiepmoi-2ba7b.web.app/images/3_2.jpg" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://thiepmoi-2ba7b.web.app/" />
+    <meta name="twitter:title" content="Thiệp Cưới Online | Quang Linh &amp; Thanh Loan" />
+    <meta name="twitter:description" content="Trân trọng mời Quý vị tham dự lễ cưới của Quang Linh &amp; Thanh Loan" />
+    <meta name="twitter:image" content="https://thiepmoi-2ba7b.web.app/images/3_2.jpg" />
+    <meta name="twitter:image:alt" content="Thiệp Cưới Online - Quang Linh &amp; Thanh Loan" />
+    
+    <!-- Additional Meta for Image - Hỗ trợ Messenger/Zalo -->
+    <link rel="image_src" href="https://thiepmoi-2ba7b.web.app/images/3_2.jpg" />
+    <meta name="image" content="https://thiepmoi-2ba7b.web.app/images/3_2.jpg" />
+    <meta itemprop="image" content="https://thiepmoi-2ba7b.web.app/images/3_2.jpg" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/ring.png" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;700&family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;700&family=Quicksand:wght@300;400;500;700&family=Playfair+Display+SC:wght@400;700;900&family=Cinzel:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
       body {
         font-family: 'Quicksand', sans-serif;
@@ -19,6 +56,18 @@
       }
       .font-cormorant {
         font-family: 'Cormorant Garamond', serif;
+      }
+      .font-numbers {
+        font-family: 'Playfair Display SC', serif;
+        font-variant-numeric: lining-nums;
+        font-feature-settings: "lnum";
+        letter-spacing: 0.02em;
+      }
+      .font-numbers-alt {
+        font-family: 'Cinzel', serif;
+        font-variant-numeric: lining-nums;
+        font-feature-settings: "lnum";
+        letter-spacing: 0.03em;
       }
     </style>
   <script type="importmap">
@@ -35,6 +84,136 @@
     "firebase/": "https://aistudiocdn.com/firebase@^12.3.0/"
   }
 }
+</script>
+<script>
+  // Set hash route ngay khi HTML load (trước khi React khởi tạo)
+  // Đọc query params từ URL gốc và set hash route tương ứng
+  (function() {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const route = urlParams.get('route'); // 'bride' hoặc 'groom' hoặc null
+      const currentHash = window.location.hash || '';
+      
+      // Nếu có query param 'route'
+      if (route) {
+        const expectedHash = route === 'bride' ? '#/bride' : '#/';
+        // Nếu hash không đúng hoặc chưa có, set lại hash (không reload)
+        if (currentHash !== expectedHash && !currentHash.startsWith(expectedHash)) {
+          window.location.hash = expectedHash;
+        }
+      }
+      // Nếu không có query param 'route' nhưng có hash, giữ nguyên hash
+      else if (currentHash && currentHash.startsWith('#/')) {
+        // Hash đã có, không cần làm gì
+      }
+      // Nếu không có cả route và hash, set mặc định là #/
+      else if (!currentHash || currentHash === '') {
+        window.location.hash = '#/';
+      }
+    } catch (e) {
+      console.error('Error setting hash route:', e);
+    }
+  })();
+  
+  // Update meta tags for Facebook/Messenger crawler (runs before React)
+  // Đọc query params từ URL gốc (không phải hash) để crawler có thể đọc được
+  (function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hash = window.location.hash || '#/';
+    const route = urlParams.get('route'); // 'bride' hoặc 'groom' hoặc null
+    const guestName = urlParams.get('to') || 'Bạn';
+    const guestRole = urlParams.get('role') || '';
+    const isParent = urlParams.get('parent') === 'true';
+    
+    // Xác định route: từ query param 'route' hoặc từ hash
+    const isBrideRoute = route === 'bride' || hash.includes('/bride');
+    
+    const baseUrl = 'https://thiepmoi-2ba7b.web.app';
+    const imageUrl = baseUrl + '/images/3_2.jpg';
+    
+    // Tạo URL đầy đủ với query params (không có hash) để crawler đọc
+    const fullUrl = new URL(window.location.href);
+    fullUrl.hash = ''; // Bỏ hash để crawler đọc được
+    const url = fullUrl.toString();
+    
+    let title = 'Thiệp Cưới Online | Quang Linh & Thanh Loan';
+    let description = 'Trân trọng mời Quý vị tham dự lễ cưới của Quang Linh & Thanh Loan';
+    
+    // Thêm thông tin route vào title/description nếu có
+    if (isBrideRoute) {
+      title = 'Thiệp Cưới Online - Nhà Gái | Quang Linh & Thanh Loan';
+      description = 'Trân trọng mời Quý vị tham dự lễ cưới của Thanh Loan & Quang Linh';
+    } else if (route === 'groom') {
+      title = 'Thiệp Cưới Online - Nhà Trai | Quang Linh & Thanh Loan';
+      description = 'Trân trọng mời Quý vị tham dự lễ cưới của Quang Linh & Thanh Loan';
+    }
+    
+    if (guestName && guestName !== 'Bạn' && guestRole) {
+      title = title + ' - ' + guestRole + ' ' + guestName;
+      description = 'Trân trọng mời ' + guestRole + ' ' + guestName + ' tham dự lễ cưới của ' + (isBrideRoute ? 'Thanh Loan & Quang Linh' : 'Quang Linh & Thanh Loan');
+    }
+    
+    const updateMeta = function(property, content, isProperty) {
+      const selector = isProperty ? 'meta[property="' + property + '"]' : 'meta[name="' + property + '"]';
+      let meta = document.querySelector(selector);
+      if (!meta) {
+        meta = document.createElement('meta');
+        if (isProperty) {
+          meta.setAttribute('property', property);
+        } else {
+          meta.setAttribute('name', property);
+        }
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', content);
+    };
+    
+    // Update title
+    document.title = title;
+    
+    // Update Open Graph
+    updateMeta('og:url', url, true);
+    updateMeta('og:title', title, true);
+    updateMeta('og:description', description, true);
+    updateMeta('og:image', imageUrl, true);
+    updateMeta('og:image:url', imageUrl, true);
+    updateMeta('og:image:secure_url', imageUrl, true);
+    
+    // Update Twitter
+    updateMeta('twitter:url', url, false);
+    updateMeta('twitter:title', title, false);
+    updateMeta('twitter:description', description, false);
+    updateMeta('twitter:image', imageUrl, false);
+    
+    // Update description
+    updateMeta('description', description, false);
+    
+    // Update Schema.org
+    let nameMeta = document.querySelector('meta[itemprop="name"]');
+    if (!nameMeta) {
+      nameMeta = document.createElement('meta');
+      nameMeta.setAttribute('itemprop', 'name');
+      document.head.appendChild(nameMeta);
+    }
+    nameMeta.setAttribute('content', title);
+    
+    let descMeta = document.querySelector('meta[itemprop="description"]');
+    if (!descMeta) {
+      descMeta = document.createElement('meta');
+      descMeta.setAttribute('itemprop', 'description');
+      document.head.appendChild(descMeta);
+    }
+    descMeta.setAttribute('content', description);
+    
+    // Update link rel="image_src"
+    let linkImage = document.querySelector('link[rel="image_src"]');
+    if (!linkImage) {
+      linkImage = document.createElement('link');
+      linkImage.setAttribute('rel', 'image_src');
+      document.head.appendChild(linkImage);
+    }
+    linkImage.setAttribute('href', imageUrl);
+  })();
 </script>
 </head>
   <body>
